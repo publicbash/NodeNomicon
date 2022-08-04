@@ -1,0 +1,16 @@
+# Exclude logs
+*.log
+
+# Exlude NMAP output
+*.gnmap
+*.nmap
+*.xml
+
+# No config files, but keep config samples
+!/src/nodenomicon/conf-pool/*.sample
+
+# Keep empty directories
+!/src/nodenomicon/work/.gitkeep
+
+# No scan data for 'htmlprogress'
+!/src/nodenomicon/htmlprogress/index.html
