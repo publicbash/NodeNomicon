@@ -1,0 +1,58 @@
+# -----------------------------------------------------------------------------
+# Vultr configuration file for NodeManager
+# -----------------------------------------------------------------------------
+
+# ----- Service Provider Driver -----------------------------------------------
+# Can be any driver inside ./nm_drivers subdirectory. Drivers scripts has a nm_
+# prefix; no need to type the prefix here.
+driver = vultr
+
+
+# ----- Miscelaneous configuration --------------------------------------------
+
+# ---- API URL
+# URL of the api endpoint. Leave it at default, unless something changed.
+#api-url = https://api.vultr.com/v2
+
+# ---- User Agent
+# Can specify an user agent for the API requests.
+#user-agent = Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36
+
+# ---- Max node count
+# The maximum number of nodes that can be created per account. Can vary from 
+# provider to provider. It's recommended to reserve at least 2 slots for 
+# administrative purposes. Take into account that existing nodes (outside 
+# NodeManager) will count against this value.
+# Take into account that instances (active or not) counts towards the number
+# of max node count.
+#max-node-count = 98
+max-node-count = 20
+
+
+# ----- Driver specific configuration -----------------------------------------
+# Using 'vultr' driver parameters
+
+# ---- API Token
+# Must be generated at Vultr's interface.
+# https://my.vultr.com/settings/#settingsapi
+api-token = 
+
+# ---- Image/Distribution
+# Linux snapshot to instantiate on Vultr.
+image = 
+
+# ---- Type
+# Vultr instance type, hardware wise. Will impact on cost.
+# To list all available types (with prices): 
+#     curl -L -s --request GET 'https://api.vultr.com/v2/plans' | jq -c '.plans[] | {id, monthly_cost}'
+#type = vc2-1c-1gb
+type = vc2-1c-1gb
+
+# ---- Region
+# Comma separated value with the possible Vultr region (if more than one,
+# a random one will be selected). If 'auto' is used, the engine will check for 
+# all available regions at runtime and will pick a random one.
+# To list all available regions that supports instances:
+#     curl -L -s --request GET 'https://api.vultr.com/v2/plans' | jq -c -r '.plans[] | select (.id == "vc2-1c-1gb") | .locations[]'
+#region = atl,dfw,ewr,lax,mia,ord,sea,sjc
+region = auto
