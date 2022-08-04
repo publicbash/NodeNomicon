@@ -1,2 +1,2 @@
 # NodeNomicon
-Distributed over multi-cloud NMAP scanner
+Distributed over multi-cloud NMAP scanner.
