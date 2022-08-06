@@ -1,0 +1,59 @@
+# -----------------------------------------------------------------------------
+# DigitalOcean configuration file for NodeManager
+# -----------------------------------------------------------------------------
+
+# ----- Service Provider Driver -----------------------------------------------
+# Can be any driver inside ./nm_drivers subdirectory. Drivers scripts has a nm_
+# prefix; no need to type the prefix here.
+driver = digitalocean
+
+
+# ----- Miscelaneous configuration --------------------------------------------
+
+# ---- API URL
+# URL of the api endpoint. Leave it at default, unless something changed.
+#api-url = https://api.digitalocean.com/v2
+
+# ---- User Agent
+# Can specify an user agent for the API requests.
+#user-agent = Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36
+
+# ---- Max node count
+# The maximum number of nodes that can be created per account. Can vary from 
+# provider to provider. It's recommended to reserve at least 2 slots for 
+# administrative purposes. Take into account that existing nodes (outside 
+# NodeManager) will count against this value.
+# Take into account that droplets (active or not) counts towards the number
+# of max node count.
+#max-node-count = 98
+max-node-count = 10
+
+
+# ----- Driver specific configuration -----------------------------------------
+# Using 'digitalocean' driver parameters
+
+# ---- API Token
+# Must be generated at DigitalOcean's interface.
+# https://www.digitalocean.com/docs/apis-clis/api/example-usage/
+api-token = 
+
+# ---- Image/Distribution
+# Linux image/distribution/snapshot to install on DigitalOcean.
+#image = debian-10-x64
+image = 
+
+# ---- Type
+# DigitalOcean droplet type, hardware wise. Will impact on cost.
+# To list all available types (with prices): 
+#     curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ----------" "https://api.digitalocean.com/v2/sizes" -s | jq -c '.sizes[] | {slug, price_hourly}'
+#type = s-1vcpu-1gb
+type = s-1vcpu-1gb
+
+# ---- Region
+# Comma separated value with the possible DigitalOcean region (if more than one,
+# a random one will be selected). If 'auto' is used, the engine will check for 
+# all available regions at runtime and will pick a random one.
+# To list all available regions that supports Droplets:
+#     curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ----------" "https://api.digitalocean.com/v2/regions" -s | jq -c '.regions[] | {slug,name,available}' | grep '"available":true'
+#region = nyc1,nyc2,nyc3
+region = auto

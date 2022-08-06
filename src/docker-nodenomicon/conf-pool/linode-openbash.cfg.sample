@@ -1,0 +1,59 @@
+# -----------------------------------------------------------------------------
+# Linode configuration file for NodeManager
+# -----------------------------------------------------------------------------
+
+# ----- Service Provider Driver -----------------------------------------------
+# Can be any driver inside ./nm_drivers subdirectory. Drivers scripts has a nm_
+# prefix; no need to type the prefix here.
+driver = linode
+
+
+# ----- Miscelaneous configuration --------------------------------------------
+
+# ---- API URL
+# URL of the api endpoint. Leave it at default, unless something changed.
+#api-url = https://api.linode.com/v4
+
+# ---- User Agent
+# Can specify an user agent for the API requests.
+#user-agent = Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36
+
+# ---- Max node count
+# The maximum number of nodes that can be created per account. Can vary from 
+# provider to provider. It's recommended to reserve at least 2 slots for 
+# administrative purposes. Take into account that existing nodes (outside 
+# NodeManager) will count against this value.
+#max-node-count = 98
+max-node-count = 20
+
+
+# ----- Driver specific configuration -----------------------------------------
+# Using 'linode' driver parameters
+
+# ---- API Token
+# Must be generated at Linode's interface.
+# https://www.linode.com/docs/guides/getting-started-with-the-linode-api/
+api-token = 
+
+# ---- Image/Distribution
+# Linux image/distribution to install on Linode.
+# To list all available images: 
+#     curl https://api.linode.com/v4/images/ -s | jq -r '.data[].id'
+#image = linode/debian8
+image = 
+
+# ---- Type
+# Linode type, hardware wise. Will impact on cost.
+# To list all available types (with prices): 
+#     curl https://api.linode.com/v4/linode/types/ -s | jq -c '.data[] | {id, price}'
+#type = g6-nanode-1
+type = g6-nanode-1
+
+# ---- Region
+# Comma separated value with the possible Linode region (if more than one,
+# a random one will be selected). If 'auto' is used, the engine will check for 
+# all available regions at runtime and will pick a random one.
+# To list all available regions that supports Linodes:
+#     curl https://api.linode.com/v4/regions -s | jq -c '.data[] | {id, status, capabilities}' | grep -P '"status":"ok"' | grep -P 'Linodes' | jq -r .id
+#region = us-central,us-east,us-west
+region = auto
