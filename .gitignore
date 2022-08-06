@@ -9,14 +9,14 @@
 # No config files, but keep config samples
 /src/nodenomicon/conf-pool/*
 !/src/nodenomicon/conf-pool/*.sample
-/src/docker-build/wrapper/conf-pool/*
-!/src/docker-build/wrapper/conf-pool/*.sample
+/src/docker-nodenomicon/conf-pool/*
+!/src/docker-nodenomicon/conf-pool/*.sample
 
 # Keep empty directories
 /src/nodenomicon/work/*
 !/src/nodenomicon/work/.gitkeep
-/src/docker-build/wrapper/work/*
-!/src/docker-build/wrapper/work/.gitkeep
+/src/docker-nodenomicon/work/*
+!/src/docker-nodenomicon/work/.gitkeep
 
 # No scan data for 'htmlprogress'
 /src/nodenomicon/htmlprogress/*
