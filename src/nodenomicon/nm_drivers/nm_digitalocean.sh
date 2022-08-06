@@ -3,15 +3,15 @@
 # ----- Defaults & Config -----------------------------------------------------
 
 APP_ID="NodeManager DigitalOcean Driver"
-APP_VERSION="0.1.12 beta"
+APP_VERSION="0.1.13 beta"
 APP_BANNER="$APP_ID $APP_VERSION"
 APP_AUTHOR="Dex0r & Kaleb @ OpenBASH"
-APP_DATETIME="2022-08-04"
+APP_DATETIME="2022-08-06"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # ----- Needed tools
-TOOL_LIST=(awk basename curl cut flock join jq nmap openssl rsync scp shuf sort ssh-keygen tempfile torify xargs) 
+TOOL_LIST=(awk basename curl cut flock join jq mktemp nmap openssl rsync scp shuf sort ssh-keygen torify xargs) 
 CURL_CMD=$( command -v curl )
 
 # ----- Misc config
@@ -107,7 +107,7 @@ function clear_known_hosts
 
 function gen_api_output
 {
-	local tmpf=$( tempfile --directory="$WORKING_DIR" )
+	local tmpf=$( mktemp -p "$WORKING_DIR" )
 	local outf="$WORKING_DIR/node_${NODE_LABEL}_$( basename $tmpf ).out"
 	mv $tmpf $outf
 	echo "$outf"

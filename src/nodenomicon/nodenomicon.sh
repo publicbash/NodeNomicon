@@ -3,15 +3,15 @@
 # ----- Defaults & Config -----------------------------------------------------
 
 APP_ID="NodeNomicon"
-APP_VERSION="0.7.8 beta"
+APP_VERSION="0.7.9 beta"
 APP_BANNER="$APP_ID $APP_VERSION"
 APP_AUTHOR="Dex0r & Kaleb @ OpenBASH"
-APP_DATETIME="2022-08-04"
+APP_DATETIME="2022-08-06"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # ----- Needed tools
-TOOL_LIST=(awk basename curl cut date join jq mktemp nmap openssl shuf sort tempfile xargs) 
+TOOL_LIST=(awk basename curl cut date join jq mktemp nmap openssl shuf sort xargs) 
 
 # ----- Parallelism config
 OPTIMIZE_MULTIPROC_COUNT=4
@@ -265,8 +265,8 @@ xecho "Generating task data for workers..."
 # ----- Generate target list 
 
 xecho "  Generating target list..."
-TMP_NMAP_OUTPUT=$( tempfile )
-TMP_TARGETS=$( tempfile )
+TMP_NMAP_OUTPUT=$( mktemp )
+TMP_TARGETS=$( mktemp )
 
 if [ "$NMAP_TARGETS" != "" ] ; then 
 	nmap -n -sL $NMAP_TARGETS -oG $TMP_NMAP_OUTPUT > /dev/null
@@ -274,7 +274,7 @@ if [ "$NMAP_TARGETS" != "" ] ; then
 fi
 
 if [ "${NMAP_TARGETS_FILE}" != "" ] ; then 
-	tmp_join_targets=$( tempfile )
+	tmp_join_targets=$( mktemp )
 	xecho "  Found '${NMAP_TARGETS_FILE}'. Adding $( count_lines ${NMAP_TARGETS_FILE} ) targets to target list..."
 	cat $TMP_TARGETS ${NMAP_TARGETS_FILE} >> $tmp_join_targets
 	sort -u --output=$TMP_TARGETS $tmp_join_targets
@@ -296,7 +296,7 @@ if [ "$( echo $NMAP_PORTS | grep -Po '^top-')" == "top-" ] ; then
 	xecho "    Selected ports: $NMAP_PORTS"
 fi
 
-TMP_PORTS=$( tempfile )
+TMP_PORTS=$( mktemp )
 OLDIFS=$IFS
 IFS=',' read -ra PORTS <<< "$NMAP_PORTS"
 for port in "${PORTS[@]}"; do
@@ -328,7 +328,7 @@ cp $TMP_PORTS $WORKING_DIR/ports.list
 
 # ----- 'Cartesian product' of targets & ports, then shuffle results
 xecho "  Joining & shuffling targets and ports..."
-TMP_FULL_TARGET=$( tempfile )
+TMP_FULL_TARGET=$( mktemp )
 join -j 2 $TMP_TARGETS $TMP_PORTS | shuf --output=$TMP_FULL_TARGET
 
 # ----- Divide results among workers
@@ -353,7 +353,7 @@ fi
 
 # ----- Distribute work data into VM nodes and start monitoring
 node_prefix="node-$( openssl rand -hex 8 )"
-tmp_work_files=$( tempfile )
+tmp_work_files=$( mktemp )
 find $WORKING_DIR -name 'worker-*.data' -type f > $tmp_work_files
 
 # pre-create monitor queue file

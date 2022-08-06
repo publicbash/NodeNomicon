@@ -3,15 +3,15 @@
 # ----- Defaults & Config -----------------------------------------------------
 
 APP_ID="NMapSSLMerge"
-APP_VERSION="0.0.2 beta"
+APP_VERSION="0.0.3 beta"
 APP_BANNER="$APP_ID $APP_VERSION"
 APP_AUTHOR="Dex0r & Kaleb @ OpenBASH"
-APP_DATETIME="2022-08-04"
+APP_DATETIME="2022-08-06"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # ----- Needed tools
-TOOL_LIST=(awk head sort tempfile xmlstarlet) 
+TOOL_LIST=(awk head mktemp sort xmlstarlet) 
 
 # ----- Log prefix for tool
 _XECHO_PREFIX="nmapsslmerge"
@@ -42,7 +42,7 @@ function call_for_help
 # -----------------------------------------------------------------------------
 
 # ----- Parameter control -----------------------------------------------------
-TMP_OUTPUT=$( tempfile )
+TMP_OUTPUT=$( mktemp )
 XML_INPUT=""
 CSV_OUTPUT="./output.csv"
 

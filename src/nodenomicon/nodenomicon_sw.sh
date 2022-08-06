@@ -3,10 +3,10 @@
 # ----- Defaults & Config -----------------------------------------------------
 
 APP_ID="NodeNomicon StartWorker"
-APP_VERSION="0.2.19 beta"
+APP_VERSION="0.2.20 beta"
 APP_BANNER="$APP_ID $APP_VERSION"
 APP_AUTHOR="Kaleb @ OpenBASH"
-APP_DATETIME="2022-08-04"
+APP_DATETIME="2022-08-06"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 NMAP_MERGER="$SCRIPT_DIR/external/nMap_Merger/nMapMerge.py"
@@ -160,7 +160,7 @@ function generate_partial_output
 NODE_PREFIX="node-$( openssl rand -hex 8 )"
 WORKING_DIR="."
 INPUT_FILE=""
-MONITOR_QUEUE=$( tempfile )
+MONITOR_QUEUE=$( mktemp )
 MONITOR_DELAY=10
 CREATE_RETRY_DELAY=30
 TORIFY_PARAM=""

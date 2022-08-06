@@ -6,11 +6,12 @@
 #     - ArchLinux 
 #     - Debian 9.x 
 #     - Debian 10.x
+#     - Debian 11.x
 #
 # Note: string comparison in 'sh' is done with only one equal sign ('=').
 #
 # Kaleb
-# 2022-08-04
+# 2022-08-06
 #
 
 LOG_FILE="nodenomicon_node_setup.log"

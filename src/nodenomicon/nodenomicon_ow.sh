@@ -3,10 +3,10 @@
 # ----- Defaults & Config -----------------------------------------------------
 
 APP_ID="NodeNomicon OptimizeWorkData"
-APP_VERSION="0.0.3 beta"
+APP_VERSION="0.0.4 beta"
 APP_BANNER="$APP_ID $APP_VERSION"
 APP_AUTHOR="Kaleb @ OpenBASH"
-APP_DATETIME="2022-08-04"
+APP_DATETIME="2022-08-06"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
@@ -68,9 +68,9 @@ fi
 # ----- Process start ---------------------------------------------------------
 
 target=$( echo $INPUT_FILE | sed -r 's/x([0-9]+)-worker/worker-\1.data/g' )
-tmp_byport=$( tempfile )
-tmp_bytarget=$( tempfile )
-tmp_byboth=$( tempfile )
+tmp_byport=$( mktemp )
+tmp_bytarget=$( mktemp )
+tmp_byboth=$( mktemp )
 
 sort -u -k1,1 -k2,2 --output=$INPUT_FILE $INPUT_FILE
 hostcount=$( awk '{ print $1 }' $INPUT_FILE | sort -u | wc -l )
@@ -90,7 +90,7 @@ xecho "Worker $WORKER_ID: Scans by group > $count_byport by ports, $count_bytarg
 
 min_count=$( min $count_byport $count_bytarget $count_byboth )
 
-selected_output=$( tempfile )
+selected_output=$( mktemp )
 if [ "$count_byport" -eq "$min_count" ] ; then
 	mv $tmp_byport $selected_output
 	xecho "Worker $WORKER_ID: Keeping grouped ports scan."
