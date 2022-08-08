@@ -22,7 +22,7 @@ Por Dex0r y Kaleb, para [OpenBASH](https://www.openbash.com/).
 
 ## Intro
 
-Es un hecho fáctico que el análisis de infraestructura es uno de los pilares fundamentales de la seguridad informática; de ahí la frase que reza: *un pentesting es tan bueno como su information gathering*. En conseciencia, utilizar [Nmap](https://nmap.org/) para llevar a cabo el escaneo de puertos es tan necesario como lo era la navaja suiza para MacGyver. 
+Es un hecho fáctico que el análisis de infraestructura es uno de los pilares fundamentales de la seguridad informática; de ahí la frase que reza: *un pentesting es tan bueno como su information gathering*. En consecuencia, utilizar [Nmap](https://nmap.org/) para llevar a cabo el escaneo de puertos es tan necesario como lo era la navaja suiza para MacGyver. 
 
 Pero no todo es felicidad en las praderas digitales, ya que en ciberseguridad no existen las *balas de plata*: los analistas trabajan con una plétora de herramientas para conseguir resultados de valor. ¿Cuántas veces te ha sucedido, querido analista, que la herramienta que utilizas hace *casi* lo que necesitas? En [OpenBASH](https://www.openbash.com/) nos topamos frecuentemente con bloqueos y filtros durante las tareas de reconocimiento, sin contar los casos donde la envergadura de la infaestructura analizada es tal que nos lleva a acotar el escaneo de puertos, tanto en amplitud como en profundidad, debido a la inmensa cantidad de tiempo requerido. Esto nos ha motivado a pensar *fuera de la caja*, experimentando con la creación de soluciones que otorguen resultados aceptables con el menor costo de tiempo y dinero posible, y que además se puedan integrar en flujos de análisis hacia grandes superficies y con medidas de seguridad robustas.
 
@@ -117,6 +117,14 @@ Mientras este proceso se lleva a cabo, se generan reportes parciales en un archi
 Una vez que todos los nodos han finalizado con su carga de trabajo y ya no quedan lotes pendientes, la herramienta reúne todos los resultados parciales para generar un resultado único en diferentes formatos según lo permite la herramienta [Nmap](https://nmap.org/) (.nmap, .gnmap y .xml).
 
 Teniendo en cuenta la capacidad de microtarifa que poseen los proveedores de servicios cloud y virtualización, al finalizar el proceso se habrá llevado a cabo una tarea de reconocimiento desde diferentes direcciones IP, con objetivos *random* y con un costo mínimo (en línea general, suele ser menos de 1 centavo de dólar por hora de trabajo de cada nodo).
+
+## Servicios Cloud soportados
+
+Los drivers disponibles actualmente para servicios cloud son:
+
++ [Digital Ocean](https://www.digitalocean.com/) 
++ [Linode](https://www.linode.com/) 
++ [Vultr](https://www.vultr.com/) 
 
 ## Pero... ¿por qué?
 
