@@ -123,6 +123,7 @@ Teniendo en cuenta la capacidad de microtarifa que poseen los proveedores de ser
 La mejor frase que resume este proyecto surge durante una mañana a puro café con la frase:
 
 > *Hoy es un buen día hacer ciencia... ¿no?*
+>
 > *Si, así es.*
 
 Nos gusta la ciencia. Nos gusta experimentar. Nos fascina teorizar y ver luego hasta donde llegamos. Tenemos debilidad por lanzar un proceso y luego escudriñar los resultados. Y más allá del desarrollo del proyecto y sus viscisitudes, nos encanta investigar; es por eso que, como buenos *nerds* que somos, queremos contagiar a nuestros colegas del mismo entusiasmo, compartiendo con la comunidad una herramienta que en escencia es un *proof of concept*, a sabiendas de que el esfuerzo tendrá un retorno más que grato.
