@@ -35,11 +35,11 @@ El **NodeNomicon** es una herramienta de análisis de puertos con las siguientes
 + **Distribuído**: Reparte el análisis en múltiples servicios cloud y de virtualización online.
 + **Extensible**: Utilizando un modelo de *drivers*, le permite consumir casi cualquier servicio cloud y de virtualización.
 + **Furtivo**: Gestiona un enjambre de nodos que reparten la carga de trabajo, evitando bloqueos y medidas de seguridad. Puede consumir APIs vía [tor](https://www.torproject.org/es/download/) entre el cliente y el proveedor de servicio cloud.
-+ **Veloz**: En cargas de trabajo alta distribución, puede llevar a cabo tareas de reconocimiento extensas en tiempos acotados.
++ **Veloz**: En cargas de trabajo de alta distribución, puede llevar a cabo tareas de reconocimiento extensas en tiempos acotados.
 + **Económico**: Con un costo mínimo y aprovechamiento máximo de los recursos, genera resultados de calidad profesional.
 + **Robusto**: Se basa en [Nmap](https://nmap.org/), con toda la capacidad y potencia que esto supone.
 + **Versátil**: Altamente parametrizable, tanto en su ejecución como configuración.
-+ **Simple**: Desarrollado casi por completo en [GNU Bash](https://www.gnu.org/software/bash/), requiere solamente librerías y herramientas encontradas en cualquier distribución de Linux.
++ **Simple**: Desarrollado casi por completo en [GNU Bash](https://www.gnu.org/software/bash/), requiere solamente librerías y herramientas encontradas en cualquier distribución de Linux, con la posibilidad de utilizar su versión en [Docker](https://www.docker.com/) para un *deploy* simple y listo para usar.
 + **Adaptable**: Se ejecuta por línea de comandos para poder ser utilizado en entornos *headless*.
 + **Libre**: ¿No te convence su funcionamiento? ¿Te parece que podrías mejorarlo? Tienes el código a disposición para modificarlo a tu antojo.
 
