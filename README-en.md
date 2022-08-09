@@ -86,7 +86,7 @@ Taking into account the micro-cost capacity of cloud and virtualization service 
 We'll take a quick look at how to set up and use the **NodeNomicon**. In any case, remember that you can get the help with:
 
 ```
-./nodonomicon.sh --help
+./nodenomicon.sh --help
 ```
 
 ### Before starting...
@@ -137,7 +137,7 @@ Instead of running a scan, do a *dry test* (doesn't run reconnaissance, just bui
 
 ### Docker
 
-If you don't want to bother with installing all the necessary packages to make the tool work, we have provided a script for you to generate your own **NodoNomicon** Docker image. To do this, you must have [Docker](https://www.docker.com/) installed. Then you run:
+If you don't want to bother with installing all the necessary packages to make the tool work, we have provided a script for you to generate your own **NodeNomicon** Docker image. To do this, you must have [Docker](https://www.docker.com/) installed. Then you run:
 
 ```
 cd src/docker-build

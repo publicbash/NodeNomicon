@@ -86,7 +86,7 @@ Teniendo en cuenta la capacidad de microtarifa que poseen los proveedores de ser
 A continuación echaremos un vistazo rápido a como configurar y utilizar el **NodeNomicon**. De todas formas, recuerda que puedes obtener la ayuda ejecutando:
 
 ```
-./nodonomicon.sh --help
+./nodenomicon.sh --help
 ```
 
 ### Antes de comenzar...
@@ -137,7 +137,7 @@ En vez de ejecutar un análisis, hacer una *prueba en seco* (no ejecuta el recon
 
 ### Docker
 
-Si no quieres molestarte con instalar todos los paquetes necesarios para hacer que la herramienta funcione, hemos dejado a disposición un script para que generes tu propia imagen Docker del **NodoNomicon**. Para hacerlo, debes disponer de [Docker](https://www.docker.com/) instalado. Luego, ejecutas:
+Si no quieres molestarte con instalar todos los paquetes necesarios para hacer que la herramienta funcione, hemos dejado a disposición un script para que generes tu propia imagen Docker del **NodeNomicon**. Para hacerlo, debes disponer de [Docker](https://www.docker.com/) instalado. Luego, ejecutas:
 
 ```
 cd src/docker-build
