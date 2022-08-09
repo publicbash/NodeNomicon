@@ -57,35 +57,15 @@ Generalmente durante un análisis de puertos se dispone de un conjunto de direcc
 
 Una vez obtenido el producto cartesiano, se procede a *barajar* el resultado mediante un proceso de aleatorización. Este resultante aleatorio es luego dividido entre la cantidad total de nodos *trabajadores* especificados, de la siguiente manera:
 
-> - Objetivos aleatorizados:
->     - 192.168.0.254:443
->     - 10.0.0.1:3306
->     - scanme.nmap.org:80
->     - 10.0.0.1:80
->     - scanme.nmap.org:3306
->     - 10.0.0.1:443
->     - 192.168.0.254:3306
->     - 192.168.0.254:80
->     - scanme.nmap.org:443
->
-> - Lotes repartidos para 2 nodos:
->     - Nodo #1:
->         - 192.168.0.254:443
->         - 10.0.0.1:3306
->         - scanme.nmap.org:80
->         - 10.0.0.1:80
->     - Nodo #2:
->         - scanme.nmap.org:3306
->         - 10.0.0.1:443
->         - 192.168.0.254:3306
->         - 192.168.0.254:80
->         - scanme.nmap.org:443
+![Carga de Trabajo](/docs/imgs/fig_02_workload.png "Carga de Trabajo")
 
 Una vez obtenidos los lotes, un proceso los optimiza para que puedan ser *digeridos* más facilmente por [Nmap](https://nmap.org/). Con toda la carga de trabajo distribuída y lista para ser procesada, se procede a ejecutar el análisis entre los nodos trabajadores.
 
 #### 2° Etapa: Bucle de gestión de nodos
 
 Durante esta etapa, la herramienta prepara una cola de ejecución para todos los lotes de objetivos, y en base a los servicios cloud disponibles en el *pool de configuraciones*, ira creando nodos *trabajadores*, asginando un lote a cada uno y poniéndolos a funcionar.
+
+![Multi-Cloud](/docs/imgs/fig_03_multicloud.png "Multi-Cloud")
 
 Cada servicio cloud es altamente configurable, pudiendo establecer la cantidad de máxima de *slots* disponibles para alojar nodos, las regiones a nivel mundial donde los nodos serán creados, el tipo de imagen a instanciar (distribución de Linux o *snapshot*), etcétera. Además, estas configuraciónes se agrupan en *pools* permitiendo gestionar perfiles que se ajusten a los distintos tipos de análisis.
 

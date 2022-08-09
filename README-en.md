@@ -53,58 +53,19 @@ The standard **NodeNomicon** workflow mainly consists of three stages: target ra
 
 Generally, during a port scan, there is a set of IP addresses and ports to be scanned. A socket (the IP:Port pair) is considered to be the target for analysis. Therefore, to obtain the complete set of targets, the Cartesian product is performed between the target IP addresses (hosts) against the target ports, for example:
 
-> - Hosts:
->     - 10.0.0.1
->     - 192.168.0.254
->     - scanme.nmap.org
->
-> - Ports:
->     - 80 (http)
->     - 443 (https)
->     - 3306 (mysql)
->
-> - Cartesian product:
->     - 10.0.0.1:80
->     - 10.0.0.1:443
->     - 10.0.0.1:3306
->     - 192.168.0.254:80
->     - 192.168.0.254:443
->     - 192.168.0.254:3306
->     - scanme.nmap.org:80
->     - scanme.nmap.org:443
->     - scanme.nmap.org:3306
+![Producto Cartesiano](/docs/imgs/fig_01_cartesian_product.png "Producto Cartesiano")
 
 Once the Cartesian product is obtained, the result is *shuffled* through a randomization process. This random result is then divided by the total number of specified *worker* nodes, as follows:
 
-> - Randomized Objectives:
->     - 192.168.0.254:443
->     - 10.0.0.1:3306
->     - scanme.nmap.org:80
->     - 10.0.0.1:80
->     - scanme.nmap.org:3306
->     - 10.0.0.1:443
->     - 192.168.0.254:3306
->     - 192.168.0.254:80
->     - scanme.nmap.org:443
->
-> - Workload distributed between 2 nodes:
->     - Node #1:
->         - 192.168.0.254:443
->         - 10.0.0.1:3306
->         - scanme.nmap.org:80
->         - 10.0.0.1:80
->     - Node #2:
->         - scanme.nmap.org:3306
->         - 10.0.0.1:443
->         - 192.168.0.254:3306
->         - 192.168.0.254:80
->         - scanme.nmap.org:443
+![Carga de Trabajo](/docs/imgs/fig_02_workload.png "Carga de Trabajo")
 
 Once the workload is obtained, a process optimizes it so can be *digested* more easily by [Nmap](https://nmap.org/). With all the workload distributed and ready to be processed, the analysis is executed between the worker nodes.
 
 #### 2nd Stage: Node management loop
 
 During this stage, the tool prepares an execution queue for all the workload, and based on the cloud services available within the *configuration pool*, it will create *worker* nodes, assigning a workload to each one and putting them to work.
+
+![Multi-Cloud](/docs/imgs/fig_03_multicloud.png "Multi-Cloud")
 
 Each cloud service is highly configurable, being able to establish the maximum amount of *slots* available to host nodes, the regions worldwide where the nodes will be created, the type of image to instantiate (Linux distribution or *snapshot*), etcetera. In addition, these configurations are grouped into *pools* allowing to manage profiles that are adjusted to the different types of analysis.
 
