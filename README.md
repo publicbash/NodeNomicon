@@ -130,7 +130,7 @@ Los drivers disponibles actualmente para servicios cloud son:
 
 ## Pero... ¿por qué?
 
-La mejor frase que resume este proyecto surge durante una mañana a puro café con la frase:
+La frase que resume este proyecto surgió durante una mañana a puro café:
 
 > *Hoy es un buen día hacer ciencia... ¿no?*
 >
