@@ -36,14 +36,14 @@ The **NodeNomicon** is a port scanning tool with the following features:
 
 + **Distributed**: Distribute the analysis in multiple cloud services and online virtualization.
 + **Extensible**: Using a *driver* model, can consume almost any cloud and virtualization service.
-+ **Stealth**: Manage a swarm of nodes that share the workload, avoiding firewalls and security measures. You can consume APIs via [tor](https://www.torproject.org/es/download/) between the client and the cloud service provider.
++ **Stealth**: Manage a swarm of nodes that share the workload, avoiding firewalls and security measures. You can consume APIs via [tor](https://www.torproject.org/) between the client and the cloud service provider.
 + **Fast**: In highly distributed workloads, it can perform extensive reconnaissance tasks in a short time.
 + **Inexpensive**: With a minimum cost and maximum use of resources, it generates professional quality results.
 + **Robust**: It is based on [Nmap](https://nmap.org/), with all the capacity and power that this entails.
 + **Versatile**: Highly parameterizable, both in its execution and configuration.
 + **Simple**: Developed almost entirely in [GNU Bash](https://www.gnu.org/software/bash/), requires only libraries and tools found in any Linux distribution, with the ability to use its [Docker](https://www.docker.com/) version for a simple, out-of-the-box *deploy*.
 + **Adaptable**: It is executed by command line to be able to be used in *headless* environments.
-+ **Libre**: Not convinced by its operation? Do you think you could improve it? You have the code at your disposal to modify it as you see fit.
++ **Free**: Not convinced by its operation? Do you think you could improve it? You have the code at your disposal to modify it as you see fit.
 
 ### How does it work?
 
@@ -106,7 +106,7 @@ Once the workload is obtained, a process optimizes it so can be *digested* more 
 
 During this stage, the tool prepares an execution queue for all the workload, and based on the cloud services available within the *configuration pool*, it will create *worker* nodes, assigning a workload to each one and putting them to work.
 
-Each cloud service is highly configurable, being able to establish the maximum amount of *slots* available to host nodes, the regions worldwide where the nodes will be created, the type of image (Linux distribution or *snapshot*) to instantiate, etcetera. In addition, these configurations are grouped into *pools* allowing to manage profiles that are adjusted to the different types of analysis.
+Each cloud service is highly configurable, being able to establish the maximum amount of *slots* available to host nodes, the regions worldwide where the nodes will be created, the type of image to instantiate (Linux distribution or *snapshot*), etcetera. In addition, these configurations are grouped into *pools* allowing to manage profiles that are adjusted to the different types of analysis.
 
 The load on each cloud service is distributed randomly, and if it is not available due to failure or saturation, the tool starts a *round robin* process to allocate a working node in one of the other available cloud services. In case that there's no availability, the node will wait at the queue until a *slot* is released.
 

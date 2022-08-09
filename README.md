@@ -26,7 +26,7 @@ Por Dex0r y Kaleb, para [OpenBASH](https://www.openbash.com/).
 
 Es un hecho fáctico que el análisis de infraestructura es uno de los pilares fundamentales de la seguridad informática; de ahí la frase que reza: *un pentesting es tan bueno como su information gathering*. En consecuencia, utilizar [Nmap](https://nmap.org/) para llevar a cabo el escaneo de puertos es tan necesario como lo era la navaja suiza para MacGyver. 
 
-Pero no todo es felicidad en las praderas digitales, ya que en ciberseguridad no existen las *balas de plata*: los analistas trabajan con una plétora de herramientas para conseguir resultados de valor. ¿Cuántas veces te ha sucedido, querido analista, que la herramienta que utilizas hace *casi* lo que necesitas? En [OpenBASH](https://www.openbash.com/) nos topamos frecuentemente con bloqueos y filtros durante las tareas de reconocimiento, sin contar los casos donde la envergadura de la infaestructura analizada es tal que nos lleva a acotar el escaneo de puertos, tanto en amplitud como en profundidad, debido a la inmensa cantidad de tiempo requerido. Esto nos ha motivado a pensar *fuera de la caja*, experimentando con la creación de soluciones que otorguen resultados aceptables con el menor costo de tiempo y dinero posible, y que además se puedan integrar en flujos de análisis hacia grandes superficies y con medidas de seguridad robustas.
+Pero no todo es felicidad en las praderas digitales, ya que en ciberseguridad no existen las *balas de plata*: los analistas trabajan con una plétora de herramientas para conseguir resultados de valor. ¿Cuántas veces te ha sucedido, querido analista, que la herramienta que utilizas hace *casi* lo que necesitas? En [OpenBASH](https://www.openbash.com/) nos topamos frecuentemente con bloqueos y filtros durante las tareas de reconocimiento, sin contar los casos donde la envergadura de la infraestructura analizada es tal que nos lleva a acotar el escaneo de puertos, tanto en amplitud como en profundidad, debido a la inmensa cantidad de tiempo requerido. Esto nos ha motivado a pensar *fuera de la caja*, experimentando con la creación de soluciones que otorguen resultados aceptables con el menor costo de tiempo y dinero posible, y que además se puedan integrar en flujos de análisis hacia grandes superficies y con medidas de seguridad robustas.
 
 Y es así qué tras azotar el teclado durante mucho tiempo, hemos creado al **NodeNomicon**.
 
@@ -34,9 +34,9 @@ Y es así qué tras azotar el teclado durante mucho tiempo, hemos creado al **No
 
 El **NodeNomicon** es una herramienta de análisis de puertos con las siguientes características:
 
-+ **Distribuído**: Reparte el análisis en múltiples servicios cloud y de virtualización online.
++ **Distribuido**: Reparte el análisis en múltiples servicios cloud y de virtualización online.
 + **Extensible**: Utilizando un modelo de *drivers*, le permite consumir casi cualquier servicio cloud y de virtualización.
-+ **Furtivo**: Gestiona un enjambre de nodos que reparten la carga de trabajo, evitando bloqueos y medidas de seguridad. Puede consumir APIs vía [tor](https://www.torproject.org/es/download/) entre el cliente y el proveedor de servicio cloud.
++ **Furtivo**: Gestiona un enjambre de nodos que reparten la carga de trabajo, evitando bloqueos y medidas de seguridad. Puede consumir APIs vía [tor](https://www.torproject.org/) entre el cliente y el proveedor de servicio cloud.
 + **Veloz**: En cargas de trabajo de alta distribución, puede llevar a cabo tareas de reconocimiento extensas en tiempos acotados.
 + **Económico**: Con un costo mínimo y aprovechamiento máximo de los recursos, genera resultados de calidad profesional.
 + **Robusto**: Se basa en [Nmap](https://nmap.org/), con toda la capacidad y potencia que esto supone.
@@ -53,26 +53,7 @@ El flujo de trabajo estándar del **NodeNomicon** consta principalmente de tres 
 
 Generalmente durante un análisis de puertos se dispone de un conjunto de direcciones IP y puertos a analizar. Se considera que un socket (el par IP:Puerto) es un objetivo de análisis. Por ende, para obtener el lote completo de objetivos, se realiza el producto cartesiano entre las direcciones IP objetivo (hosts) contra los puertos objetivo, por ejemplo:
 
-> - Hosts:
->     - 10.0.0.1
->     - 192.168.0.254
->     - scanme.nmap.org
->
-> - Puertos:
->     - 80 (http)
->     - 443 (https)
->     - 3306 (mysql)
->
-> - Producto Cartesiano:
->     - 10.0.0.1:80
->     - 10.0.0.1:443
->     - 10.0.0.1:3306
->     - 192.168.0.254:80
->     - 192.168.0.254:443
->     - 192.168.0.254:3306
->     - scanme.nmap.org:80
->     - scanme.nmap.org:443
->     - scanme.nmap.org:3306
+![Producto Cartesiano](/docs/imgs/fig_01_cartesian_product.png "Producto Cartesiano")
 
 Una vez obtenido el producto cartesiano, se procede a *barajar* el resultado mediante un proceso de aleatorización. Este resultante aleatorio es luego dividido entre la cantidad total de nodos *trabajadores* especificados, de la siguiente manera:
 
@@ -94,7 +75,7 @@ Una vez obtenido el producto cartesiano, se procede a *barajar* el resultado med
 >         - scanme.nmap.org:80
 >         - 10.0.0.1:80
 >     - Nodo #2:
->         -  scanme.nmap.org:3306
+>         - scanme.nmap.org:3306
 >         - 10.0.0.1:443
 >         - 192.168.0.254:3306
 >         - 192.168.0.254:80
@@ -104,9 +85,9 @@ Una vez obtenidos los lotes, un proceso los optimiza para que puedan ser *digeri
 
 #### 2° Etapa: Bucle de gestión de nodos
 
-Durante esta etapa, la herramienta prepara una cola de ejecución para todos los lotes de objetivos, y en base a los servicios cloud disponibles en el *pool de configuraciones*, ira creando nodos *trabajadores*, asginando un lote a cada uno y poniendolos a funcionar.
+Durante esta etapa, la herramienta prepara una cola de ejecución para todos los lotes de objetivos, y en base a los servicios cloud disponibles en el *pool de configuraciones*, ira creando nodos *trabajadores*, asginando un lote a cada uno y poniéndolos a funcionar.
 
-Cada servicio cloud es altamente configurable, pudiendo establecer la cantidad de máxima de *slots* disponibles para alojar nodos, las regiones a nivel mundial donde los nodos serán creados, el tipo de imagen (distribución de Linux o *snapshot*) a instanciar, etcétera. Además, estas configuraciónes se agrupan en *pools* permitiendo gestionar perfiles que se ajusten a los distintos tipos de análisis.
+Cada servicio cloud es altamente configurable, pudiendo establecer la cantidad de máxima de *slots* disponibles para alojar nodos, las regiones a nivel mundial donde los nodos serán creados, el tipo de imagen a instanciar (distribución de Linux o *snapshot*), etcétera. Además, estas configuraciónes se agrupan en *pools* permitiendo gestionar perfiles que se ajusten a los distintos tipos de análisis.
 
 La carga sobre cada servicio cloud se distribuye de forma aleatoria, y en caso de no estar disponible por falla o saturación, la herramienta comienza un proceso de *round robin* para poder ubicar un nodo de trabajo en alguno de los otros servicios cloud disponibles. En caso de que no exista disponibilidad, el nodo queda en espera en la cola de trabajo hasta que se libere un *slot*.
 
@@ -132,11 +113,11 @@ Los drivers disponibles actualmente para servicios cloud son:
 
 La frase que resume este proyecto surgió durante una mañana a puro café:
 
-> *Hoy es un buen día hacer ciencia... ¿no?*
+> *Hoy es un buen día para hacer ciencia... ¿no?*
 >
 > *Si, así es.*
 
-Nos gusta la ciencia. Nos gusta experimentar. Nos fascina teorizar y ver luego hasta donde llegamos. Tenemos debilidad por lanzar un proceso y luego escudriñar los resultados. Y más allá del desarrollo del proyecto y sus viscisitudes, nos encanta investigar; es por eso que, como buenos *nerds* que somos, queremos contagiar a nuestros colegas del mismo entusiasmo, compartiendo con la comunidad una herramienta que en escencia es un *proof of concept*, a sabiendas de que el esfuerzo tendrá un retorno más que grato.
+Nos gusta la ciencia. Nos gusta experimentar. Nos fascina teorizar y ver luego hasta donde llegamos. Tenemos debilidad por lanzar un proceso y luego escudriñar los resultados. Y más allá del desarrollo del proyecto y sus vicisitudes, nos encanta investigar; es por eso que, como buenos *nerds* que somos, queremos contagiar a nuestros colegas del mismo entusiasmo, compartiendo con la comunidad una herramienta que en escencia es un *proof of concept*, a sabiendas de que el esfuerzo tendrá un retorno más que grato.
 
 Comilla, espacio, guión, guión. :wink:
 
