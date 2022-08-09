@@ -81,6 +81,79 @@ Una vez que todos los nodos han finalizado con su carga de trabajo y ya no queda
 
 Teniendo en cuenta la capacidad de microtarifa que poseen los proveedores de servicios cloud y virtualización, al finalizar el proceso se habrá llevado a cabo una tarea de reconocimiento desde diferentes direcciones IP, con objetivos *random* y con un costo mínimo (en línea general, suele ser menos de 1 centavo de dólar por hora de trabajo de cada nodo).
 
+## ¿Cómo se utiliza?
+
+A continuación echaremos un vistazo rápido a como configurar y utilizar el **NodeNomicon**. De todas formas, recuerda que puedes obtener la ayuda ejecutando:
+
+```
+./nodonomicon.sh --help
+```
+
+### Antes de comenzar...
+
+Antes de utilizar **NodeNomicon** debes disponer de acceso a alguno de los servicios cloud soportados por la herramienta, y habilitar el acceso via API para tu cuenta.
+
+Además deberás tener una imagen o snapshot pregenerada de cualquier versión de Linux que soporte [GNU Bash](https://www.gnu.org/software/bash/) y tenga instalada la herramienta [Nmap](https://nmap.org/). Esta imagen/snapshot será la que sea clonada para generar los nodos de trabajo que luego llevaran a cabo las tareas de reconocimiento.
+
+> **IMPORTANTE:** te recordamos que al utilizar servicios de proveedores cloud **vas a incurrir en gastos de dinero**. Sé prudente al momento de planificar tu análisis, y siempre verifica que todos los nodos hayan sido eliminados una vez terminado el reconocimiento... **¡no digas que no te lo hemos advertido!**.
+
+### Configuración
+
+Lo primero es preparar el *pool de configuraciones*. Este pool es simplemente un directorio el cual contendrá el conjunto de archivos de configuración específicos para cada proveedor cloud. Por defecto el pool de configuración utilizado será `/etc/nodenomicon`, si bien puedes modificarlo con el parámetro `--config-pool`; cabe destacar que solamente los archivos con extensión `.cfg` serán considerados como parte del pool, el resto simplemente serán ignorados (truco: si deseas deshabilitar un proveedor, simplemente modifica la extensión del archivo y *voilá*).
+
+Cada archivo de posee las instrucciones para que puedas configurarlo con las llaves API del proveedor de servicio cloud. A modo de ejemplo, dispones de plantillas de configuración para los proveedores soportados en el subdirectorio `src/nodenomicon/conf-pool/`.
+
+### Uso
+
+Análisis de los 100 puertos más frecuentes para un host, dividiendo la tarea en 5 nodos:
+
+```
+./nodenomicon.sh --target scanme.nmap.org --ports top-100 --workers 5
+```
+
+Análisis de los primeros 1024 puertos para la red 8.8.8.8/24 dividiendo la tarea en 50 nodos, con un paralelismo de 10 nodos (un paralelismo de 10 nodos significa que de los 50 nodos totales, la herramienta mantendrá un máximo de 10 trabajando en simultáneo):
+
+```
+./nodenomicon.sh --target 8.8.8.8/24 --ports 1-1024 --workers 50 --parallel 10
+```
+
+Análisis de los puertos 80 y 443 con 6 nodos, utilizando la red [tor](https://www.torproject.org/) para acceder a las APIs de los proveedores cloud:
+
+```
+./nodenomicon.sh -t scanme.nmap.org -p 80,443 -w 6 --torify
+```
+
+Análisis de todos los hosts definidos en el archivo `recon.txt` (uno por línea), para el puerto 22, pero utilizando un pool de configuración definido en el directorio `/home/kaleb/conf-pool-big`:
+
+```
+./nodenomicon.sh --config-pool /home/kaleb/conf-pool-big --targets-file recon.txt -p 2 -w 16 
+```
+
+En vez de ejecutar un análisis, hacer una *prueba en seco* (no ejecuta el reconocimiento, solamente genera los lotes de trabajo y detiene el proceso):
+
+```
+./nodenomicon.sh -t 8.8.4.4/24 -p 1-1024,3306,5901 -w 3 --dry-run
+```
+
+### Docker
+
+Si no quieres molestarte con instalar todos los paquetes necesarios para hacer que la herramienta funcione, hemos dejado a disposición un script para que generes tu propia imagen Docker del **NodoNomicon**. Para hacerlo, debes disponer de [Docker](https://www.docker.com/) instalado. Luego, ejecutas:
+
+```
+cd src/docker-build
+./build-docker.sh
+```
+
+... y pasados unos minutos, tendrás tu imagen lista para usar. Para invocar la imagen de docker, debes asociar los directorios `/etc/nodenomicon` y `/nodenomicon/work` del contenedor a directorios de tu equipo. El primero es para que el contenedor pueda acceder al pool de configuración, y el segundo es para que puedas persistir los resultados del análisis. De todas formas te recomendamos que utilices nuestro *wrapper*; es tan simple como:
+
+```
+cd src/docker-nodenomicon
+./docker-nodenomicon.sh --help
+./docker-nodenomicon.sh -t scanme.nmap.org -p 80,443 -w 6 --torify
+```
+
+Si utilizas el wrapper, debes almacenar el pool de configuración en el directorio `src/docker-nodenomicon/conf-pool`, y los resultados los encontraras en `src/docker-nodenomicon/work`.
+
 ## Servicios Cloud soportados
 
 Los drivers disponibles actualmente para servicios cloud son:
@@ -88,6 +161,12 @@ Los drivers disponibles actualmente para servicios cloud son:
 + [Digital Ocean](https://www.digitalocean.com/) 
 + [Linode](https://www.linode.com/) 
 + [Vultr](https://www.vultr.com/) 
+
+Y próximamente...
+
++ [Proxmox](https://www.proxmox.com/)
++ [VMWare](https://www.vmware.com/)
++ [AWS](https://aws.amazon.com/)
 
 ## Pero... ¿por qué?
 

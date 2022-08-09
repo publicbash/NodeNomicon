@@ -81,6 +81,79 @@ Once all nodes have finished their workload and there are no more pending batche
 
 Taking into account the micro-cost capacity of cloud and virtualization service providers, at the end of the process a reconnaissance task will have been carried out from different IP addresses, with *random* objectives and at a minimum cost (in general, it is usually less than 1 cent of dollar per hour of work of each node).
 
+## How to use it?
+
+We'll take a quick look at how to set up and use the **NodeNomicon**. In any case, remember that you can get the help with:
+
+```
+./nodonomicon.sh --help
+```
+
+### Before starting...
+
+Before using **NodeNomicon** you must have access to one of the cloud services supported by the tool, and enable API access for your account.
+
+You must also have a pre-built image or snapshot of any version of Linux that supports [GNU Bash](https://www.gnu.org/software/bash/) and has the [Nmap](https://nmap. org/). This image/snapshot will be the one that is cloned to generate the worker nodes that will then carry out the reconnaissance tasks.
+
+> **IMPORTANT:** We remind you that when using services from cloud providers **you will incur in money costs**. Be careful when planning your analysis, and always check that all nodes have been removed after reconnaissance is complete... **don't say we didn't tell you!**.
+
+### Configuration
+
+The first thing is to prepare the *configuration pool*. This pool is simply a directory which will contain the set of specific configuration files for each cloud provider. By default the configuration pool used will be `/etc/nodenomicon`, although you can modify it with the `--config-pool` parameter; note that only files with extension `.cfg` will be considered as part of the pool, the rest will simply be ignored (trick: if you want to disable a provider, just modify the file extension and *voilá*).
+
+Each file has the instructions so you can configure it with the API keys of the cloud service provider. As an example, configuration templates for supported providers are available in the `src/nodenomicon/conf-pool/` subdirectory.
+
+### Use
+
+Analysis of the 100 most frequent ports, dividing the task into 5 nodes:
+
+```
+./nodenomicon.sh --target scanme.nmap.org --ports top-100 --workers 5
+```
+
+Analysis of the first 1024 ports for the 8.8.8.8/24 network dividing the task into 50 nodes, with a parallelism of 10 nodes (a parallelism of 10 nodes means that of the total 50 nodes, the tool will keep a maximum of 10 working  simultaneously):
+
+```
+./nodenomicon.sh --target 8.8.8.8/24 --ports 1-1024 --workers 50 --parallel 10
+```
+
+Analysis of ports 80 and 443 with 6 nodes, using the [tor](https://www.torproject.org/) network to access the APIs of cloud providers:
+
+```
+./nodenomicon.sh -t scanme.nmap.org -p 80,443 -w 6 --torify
+```
+
+Analysis of all hosts defined in the `recon.txt` file (one per line), for port 22, but using a configuration pool defined in the `/home/kaleb/conf-pool-big` directory:
+
+```
+./nodenomicon.sh --config-pool /home/kaleb/conf-pool-big --targets-file recon.txt -p 2 -w 16
+```
+
+Instead of running a scan, do a *dry test* (doesn't run reconnaissance, just builds the job batches and stops the process):
+
+```
+./nodenomicon.sh -t 8.8.4.4/24 -p 1-1024,3306,5901 -w 3 --dry-run
+```
+
+### Docker
+
+If you don't want to bother with installing all the necessary packages to make the tool work, we have provided a script for you to generate your own **NodoNomicon** Docker image. To do this, you must have [Docker](https://www.docker.com/) installed. Then you run:
+
+```
+cd src/docker-build
+./build-docker.sh
+```
+
+... and after a few minutes, you will have your image ready to use. To invoke the docker image, you must map the container's `/etc/nodenomicon` and `/nodenomicon/work` directories to directories on your computer. The first is for the container to access the configuration pool, and the second is for persist the scan results. In any case, we recommend that you use our *wrapper*; it is as simple as:
+
+```
+cd src/docker-nodenomicon
+./docker-nodenomicon.sh --help
+./docker-nodenomicon.sh -t scanme.nmap.org -p 80,443 -w 6 --torify
+```
+
+If you use the wrapper, you should store the configuration pool in the `src/docker-nodenomicon/conf-pool` directory, and the results will be found in `src/docker-nodenomicon/work`.
+
 ## Supported Cloud Services
 
 The drivers currently available for cloud services are:
@@ -88,6 +161,12 @@ The drivers currently available for cloud services are:
 + [Digital Ocean](https://www.digitalocean.com/)
 + [Linode](https://www.linode.com/)
 + [Vultr](https://www.vultr.com/)
+
+And soon...
+
++ [Proxmox](https://www.proxmox.com/)
++ [VMWare](https://www.vmware.com/)
++ [AWS](https://aws.amazon.com/)
 
 ## But why?
 
