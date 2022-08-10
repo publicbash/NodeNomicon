@@ -105,28 +105,34 @@ Each file has the instructions so you can configure it with the API keys of the 
 
 ### Use
 
-Analysis of the 100 most frequent ports, dividing the task into 5 nodes:
+Analysis of the 100 most frequent ports for a host, dividing the task into 5 nodes:
 
 ```
 ./nodenomicon.sh --target scanme.nmap.org --ports top-100 --workers 5
 ```
 
+Analysis of the 10 most frequent ports for a host, dividing the task into 10 nodes (one port per node):
+
+```
+./nodenomicon.sh -t scanme.nmap.org -p top-10 -w 10
+```
+
 Analysis of the first 1024 ports for the 8.8.8.8/24 network dividing the task into 50 nodes, with a parallelism of 10 nodes (a parallelism of 10 nodes means that of the total 50 nodes, the tool will keep a maximum of 10 working  simultaneously):
 
 ```
-./nodenomicon.sh --target 8.8.8.8/24 --ports 1-1024 --workers 50 --parallel 10
+./nodenomicon.sh -target 8.8.8.8/24 --ports 1-1024 --workers 50 --parallel 10
 ```
 
 Analysis of ports 80 and 443 with 6 nodes, using the [tor](https://www.torproject.org/) network to access the APIs of cloud providers:
 
 ```
-./nodenomicon.sh -t scanme.nmap.org -p 80,443 -w 6 --torify
+./nodenomicon.sh -t 8.8.8.8/24 -p 80,443 -w 6 --torify
 ```
 
 Analysis of all hosts defined in the `recon.txt` file (one per line), for port 22, but using a configuration pool defined in the `/home/kaleb/conf-pool-big` directory:
 
 ```
-./nodenomicon.sh --config-pool /home/kaleb/conf-pool-big --targets-file recon.txt -p 2 -w 16
+./nodenomicon.sh --config-pool /home/kaleb/conf-pool-big --targets-file recon.txt -p 22 -w 16
 ```
 
 Instead of running a scan, do a *dry test* (doesn't run reconnaissance, just builds the job batches and stops the process):
@@ -134,7 +140,6 @@ Instead of running a scan, do a *dry test* (doesn't run reconnaissance, just bui
 ```
 ./nodenomicon.sh -t 8.8.4.4/24 -p 1-1024,3306,5901 -w 3 --dry-run
 ```
-
 ### Docker
 
 If you don't want to bother with installing all the necessary packages to make the tool work, we have provided a script for you to generate your own **NodeNomicon** Docker image. To do this, you must have [Docker](https://www.docker.com/) installed. Then you run:
@@ -149,7 +154,7 @@ cd src/docker-build
 ```
 cd src/docker-nodenomicon
 ./docker-nodenomicon.sh --help
-./docker-nodenomicon.sh -t scanme.nmap.org -p 80,443 -w 6 --torify
+./docker-nodenomicon.sh -t scanme.nmap.org -p 22,25,80,443,3306,8080,5900-5901 -w 4 --torify
 ```
 
 If you use the wrapper, you should store the configuration pool in the `src/docker-nodenomicon/conf-pool` directory, and the results will be found in `src/docker-nodenomicon/work`.

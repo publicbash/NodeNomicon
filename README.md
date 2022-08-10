@@ -111,22 +111,28 @@ Análisis de los 100 puertos más frecuentes para un host, dividiendo la tarea e
 ./nodenomicon.sh --target scanme.nmap.org --ports top-100 --workers 5
 ```
 
+Análisis de los 10 puertos más frecuentes para un host, dividiendo la tarea en 10 nodos (un puerto por nodo):
+
+```
+./nodenomicon.sh -t scanme.nmap.org -p top-10 -w 10
+```
+
 Análisis de los primeros 1024 puertos para la red 8.8.8.8/24 dividiendo la tarea en 50 nodos, con un paralelismo de 10 nodos (un paralelismo de 10 nodos significa que de los 50 nodos totales, la herramienta mantendrá un máximo de 10 trabajando en simultáneo):
 
 ```
-./nodenomicon.sh --target 8.8.8.8/24 --ports 1-1024 --workers 50 --parallel 10
+./nodenomicon.sh -target 8.8.8.8/24 --ports 1-1024 --workers 50 --parallel 10
 ```
 
 Análisis de los puertos 80 y 443 con 6 nodos, utilizando la red [tor](https://www.torproject.org/) para acceder a las APIs de los proveedores cloud:
 
 ```
-./nodenomicon.sh -t scanme.nmap.org -p 80,443 -w 6 --torify
+./nodenomicon.sh -t 8.8.8.8/24 -p 80,443 -w 6 --torify
 ```
 
 Análisis de todos los hosts definidos en el archivo `recon.txt` (uno por línea), para el puerto 22, pero utilizando un pool de configuración definido en el directorio `/home/kaleb/conf-pool-big`:
 
 ```
-./nodenomicon.sh --config-pool /home/kaleb/conf-pool-big --targets-file recon.txt -p 2 -w 16 
+./nodenomicon.sh --config-pool /home/kaleb/conf-pool-big --targets-file recon.txt -p 22 -w 16 
 ```
 
 En vez de ejecutar un análisis, hacer una *prueba en seco* (no ejecuta el reconocimiento, solamente genera los lotes de trabajo y detiene el proceso):
@@ -149,7 +155,7 @@ cd src/docker-build
 ```
 cd src/docker-nodenomicon
 ./docker-nodenomicon.sh --help
-./docker-nodenomicon.sh -t scanme.nmap.org -p 80,443 -w 6 --torify
+./docker-nodenomicon.sh -t scanme.nmap.org -p 22,25,80,443,3306,8080,5900-5901 -w 4 --torify
 ```
 
 Si utilizas el wrapper, debes almacenar el pool de configuración en el directorio `src/docker-nodenomicon/conf-pool`, y los resultados los encontraras en `src/docker-nodenomicon/work`.
