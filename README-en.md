@@ -43,7 +43,7 @@ The **NodeNomicon** is a port scanning tool with the following features:
 + **Versatile**: Highly parameterizable, both in its execution and configuration.
 + **Simple**: Developed almost entirely in [GNU Bash](https://www.gnu.org/software/bash/), requires only libraries and tools found in any Linux distribution, with the ability to use its [Docker](https://www.docker.com/) version for a simple, out-of-the-box *deploy*.
 + **Adaptable**: It is executed by command line to be able to be used in *headless* environments.
-+ **Free**: Not convinced by its operation? Do you think you could improve it? You have the code at your disposal to modify it as you see fit.
++ **Free**: Not convinced by how it works? Do you think you could improve it? You have the code at your disposal to modify it as you see fit.
 
 ### How does it work?
 

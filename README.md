@@ -28,7 +28,7 @@ Es un hecho fáctico que el análisis de infraestructura es uno de los pilares f
 
 Pero no todo es felicidad en las praderas digitales, ya que en ciberseguridad no existen las *balas de plata*: los analistas trabajan con una plétora de herramientas para conseguir resultados de valor. ¿Cuántas veces te ha sucedido, querido analista, que la herramienta que utilizas hace *casi* lo que necesitas? En [OpenBASH](https://www.openbash.com/) nos topamos frecuentemente con bloqueos y filtros durante las tareas de reconocimiento, sin contar los casos donde la envergadura de la infraestructura analizada es tal que nos lleva a acotar el escaneo de puertos, tanto en amplitud como en profundidad, debido a la inmensa cantidad de tiempo requerido. Esto nos ha motivado a pensar *fuera de la caja*, experimentando con la creación de soluciones que otorguen resultados aceptables con el menor costo de tiempo y dinero posible, y que además se puedan integrar en flujos de análisis hacia grandes superficies y con medidas de seguridad robustas.
 
-Y es así qué tras azotar el teclado durante mucho tiempo, hemos creado al **NodeNomicon**.
+Y es así qué tras azotar el teclado durante mucho tiempo, hemos creado el **NodeNomicon**.
 
 ## ¿Qué es el NodeNomicon?
 
@@ -63,11 +63,11 @@ Una vez obtenidos los lotes, un proceso los optimiza para que puedan ser *digeri
 
 #### 2° Etapa: Bucle de gestión de nodos
 
-Durante esta etapa, la herramienta prepara una cola de ejecución para todos los lotes de objetivos, y en base a los servicios cloud disponibles en el *pool de configuraciones*, ira creando nodos *trabajadores*, asginando un lote a cada uno y poniéndolos a funcionar.
+Durante esta etapa, la herramienta prepara una cola de ejecución para todos los lotes de objetivos, y en base a los servicios cloud disponibles en el *pool de configuraciones*, irá creando nodos *trabajadores*, asignando un lote a cada uno y poniéndolos a funcionar.
 
 ![Multi-Cloud](/docs/imgs/fig_03_multicloud.png "Multi-Cloud")
 
-Cada servicio cloud es altamente configurable, pudiendo establecer la cantidad de máxima de *slots* disponibles para alojar nodos, las regiones a nivel mundial donde los nodos serán creados, el tipo de imagen a instanciar (distribución de Linux o *snapshot*), etcétera. Además, estas configuraciónes se agrupan en *pools* permitiendo gestionar perfiles que se ajusten a los distintos tipos de análisis.
+Cada servicio cloud es altamente configurable, pudiendo establecer la cantidad máxima de *slots* disponibles para alojar nodos, las regiones a nivel mundial donde los nodos serán creados, el tipo de imagen a instanciar (distribución de Linux o *snapshot*), etcétera. Además, estas configuraciónes se agrupan en *pools* permitiendo gestionar perfiles que se ajusten a los distintos tipos de análisis.
 
 La carga sobre cada servicio cloud se distribuye de forma aleatoria, y en caso de no estar disponible por falla o saturación, la herramienta comienza un proceso de *round robin* para poder ubicar un nodo de trabajo en alguno de los otros servicios cloud disponibles. En caso de que no exista disponibilidad, el nodo queda en espera en la cola de trabajo hasta que se libere un *slot*.
 
@@ -182,7 +182,7 @@ La frase que resume este proyecto surgió durante una mañana a puro café:
 >
 > *Si, así es.*
 
-Nos gusta la ciencia. Nos gusta experimentar. Nos fascina teorizar y ver luego hasta donde llegamos. Tenemos debilidad por lanzar un proceso y luego escudriñar los resultados. Y más allá del desarrollo del proyecto y sus vicisitudes, nos encanta investigar; es por eso que, como buenos *nerds* que somos, queremos contagiar a nuestros colegas del mismo entusiasmo, compartiendo con la comunidad una herramienta que en escencia es un *proof of concept*, a sabiendas de que el esfuerzo tendrá un retorno más que grato.
+Nos gusta la ciencia. Nos gusta experimentar. Nos fascina teorizar y ver luego hasta donde llegamos. Tenemos debilidad por lanzar un proceso y luego escudriñar los resultados. Y más allá del desarrollo del proyecto y sus vicisitudes, nos encanta investigar; es por eso que, como buenos *nerds* que somos, queremos contagiar a nuestros colegas del mismo entusiasmo, compartiendo con la comunidad una herramienta que en esencia es un *proof of concept*, a sabiendas de que el esfuerzo tendrá un retorno más que grato.
 
 Comilla, espacio, guión, guión. :wink:
 
