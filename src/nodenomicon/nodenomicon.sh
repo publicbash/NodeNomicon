@@ -3,10 +3,10 @@
 # ----- Defaults & Config -----------------------------------------------------
 
 APP_ID="NodeNomicon"
-APP_VERSION="0.7.9 beta"
+APP_VERSION="0.8.0 beta"
 APP_BANNER="$APP_ID $APP_VERSION"
 APP_AUTHOR="Dex0r & Kaleb @ OpenBASH"
-APP_DATETIME="2022-08-06"
+APP_DATETIME="2022-08-11"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 

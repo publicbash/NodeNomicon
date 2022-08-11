@@ -3,10 +3,10 @@
 # ----- Defaults & Config -----------------------------------------------------
 
 APP_ID="NodeManager Linode Driver"
-APP_VERSION="0.1.17 beta"
+APP_VERSION="0.1.18 beta"
 APP_BANNER="$APP_ID $APP_VERSION"
 APP_AUTHOR="Dex0r & Kaleb @ OpenBASH"
-APP_DATETIME="2022-08-06"
+APP_DATETIME="2022-08-11"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
@@ -89,15 +89,15 @@ function read_node_data
 	NODE_IPV4=$( get_param $NODE_DATA_FILE node_ipv4 '' )
 
 	# check node basic params
-	if [ "$NODE_DRIVER" == "" ] ; then xecho "ERROR: undefined driver for this node data." ; exit 1 ; fi
+	if [ "$NODE_DRIVER" == "" ]  ; then xecho "ERROR: undefined driver for this node data." ; exit 1 ; fi
 	if [ "$NODE_DRIVER" != "$DRIVER_NAME" ] ; then xecho "ERROR: the node do not correspond to this driver ('$DRIVER_NAME' vs '$NODE_DRIVER')" ; exit 1 ; fi
-	if [ "$API_KEY" == "" ]     ; then xecho "ERROR: api-key not found." ; exit 1 ; fi
-	if [ "$NODE_ID" == "" ]     ; then xecho "ERROR: undefined node ID for this node data." ; exit 1 ; fi
-	if [ "$NODE_TYPE" = "" ]    ; then xecho "WARNING: undefined node parameter 'node_type'." ; fi
-	if [ "$NODE_IMAGE" = "" ]   ; then xecho "WARNING: undefined node parameter 'node_image'." ; fi
-	if [ "$NODE_SSH_KEY" = "" ] ; then xecho "WARNING: undefined node parameter 'node_ssh_key'." ; fi
-	if [ "$NODE_REGION" = "" ]  ; then xecho "WARNING: undefined node parameter 'node_region'." ; fi
-	if [ "$NODE_IPV4" = "" ]    ; then xecho "WARNING: undefined node parameter 'node_ipv4'." ; fi
+	if [ "$API_KEY" == "" ]      ; then xecho "ERROR: api-key not found." ; exit 1 ; fi
+	if [ "$NODE_ID" == "" ]      ; then xecho "ERROR: undefined node ID for this node data." ; exit 1 ; fi
+	if [ "$NODE_TYPE" == "" ]    ; then xecho "WARNING: undefined node parameter 'node_type'." ; fi
+	if [ "$NODE_IMAGE" == "" ]   ; then xecho "WARNING: undefined node parameter 'node_image'." ; fi
+	if [ "$NODE_SSH_KEY" == "" ] ; then xecho "WARNING: undefined node parameter 'node_ssh_key'." ; fi
+	if [ "$NODE_REGION" == "" ]  ; then xecho "WARNING: undefined node parameter 'node_region'." ; fi
+	if [ "$NODE_IPV4" == "" ]    ; then xecho "WARNING: undefined node parameter 'node_ipv4'." ; fi
 }
 
 function clear_known_hosts

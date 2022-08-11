@@ -11,11 +11,11 @@
 # Note: string comparison in 'sh' is done with only one equal sign ('=').
 #
 # Kaleb
-# 2022-08-06
+# 2022-08-11
 #
 
 LOG_FILE="nodenomicon_node_setup.log"
-TOOL_LIST="rsync screen bash curl"
+TOOL_LIST="bash curl rsync screen"
 
 PATH_APK=$( command -v apk )
 PATH_APTGET=$( command -v apt-get )
@@ -49,6 +49,22 @@ for t in $TOOL_LIST ; do
 		echo "# INFO: '$t' found at $toolpath" >> $LOG_FILE
 	fi
 done
+
+echo "# Checking for Nmap..." >> $LOG_FILE
+NMAP_CMD=$( command -v nmap )
+if [ "$NMAP_CMD" = "" ] ; then
+	echo "# INFO: 'nmap' not found!" >> $LOG_FILE
+	echo "# Installing OS default 'nmap' from repository..." >> $LOG_FILE
+	if [ "$PATH_APK" != "" ] ; then
+		$PATH_APK --no-progress add nmap >> $LOG_FILE 2>&1
+	else
+		$PATH_APTGET --quiet --yes install nmap >> $LOG_FILE 2>&1
+	fi
+	$NMAP_CMD --version >> $LOG_FILE
+else
+	echo "# INFO: 'nmap' found at $NMAP_CMD" >> $LOG_FILE
+	$NMAP_CMD --version >> $LOG_FILE
+fi
 
 if [ "$FLAG_MISSING_TOOL" = "NO" ] ; then
 	echo "# OK: setup process ended successfully." >> $LOG_FILE

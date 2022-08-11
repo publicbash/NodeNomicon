@@ -39,8 +39,8 @@ api-token =
 # Linux image/distribution to install on Linode.
 # To list all available images: 
 #     curl https://api.linode.com/v4/images/ -s | jq -r '.data[].id'
-#image = linode/debian8
-image = 
+#image = linode/debian11
+image = linode/debian11
 
 # ---- Type
 # Linode type, hardware wise. Will impact on cost.

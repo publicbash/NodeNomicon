@@ -39,15 +39,17 @@ api-token =
 
 # ---- Image/Distribution
 # Linux image/distribution/snapshot to install on DigitalOcean.
-#image = debian-10-x64
-image = 
+# To list all available distribution images:
+#     curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ----------" "https://api.digitalocean.com/v2/images?type=distribution" -s | jq -c '.images[] | {slug, distribution}'
+#image = debian-11-x64
+image = debian-11-x64
 
 # ---- Type
 # DigitalOcean droplet type, hardware wise. Will impact on cost.
 # To list all available types (with prices): 
 #     curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ----------" "https://api.digitalocean.com/v2/sizes" -s | jq -c '.sizes[] | {slug, price_hourly}'
-#type = s-1vcpu-1gb
-type = s-1vcpu-1gb
+#type = s-1vcpu-512mb-10gb
+type = s-1vcpu-512mb-10gb
 
 # ---- Region
 # Comma separated value with the possible DigitalOcean region (if more than one,
