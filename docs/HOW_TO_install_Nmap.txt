@@ -1,0 +1,11 @@
+HOW TO DOWNLOAD, COMPILE & INSTALL NMAP
+---------------------------------------
+
+apt install curl bzip2 openssl libssl-dev libssh2-1-dev libssh2-1 gcc g++ make cmake libpcap-dev -y ;\
+curl https://nmap.org/dist/nmap-7.92.tar.bz2 -O ;\
+bzip2 -cd nmap-7.92.tar.bz2 | tar xvf - ;\
+cd nmap-7.92 ;\
+./configure ;\
+make ;\
+sudo make install
+

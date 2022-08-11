@@ -1,5 +1,5 @@
-HOW TO CREATE NODES AT EACH PROVIDER
-------------------------------------
+HOW TO CREATE SNAPSHOTS AT EACH PROVIDER
+----------------------------------------
 
 * -----[ Linode ]--------------------------------------------------------------
 Create the snapshot. Nothing special.
