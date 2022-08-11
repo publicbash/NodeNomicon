@@ -39,7 +39,13 @@ api-token =
 
 # ---- Image/Distribution
 # Linux snapshot to instantiate on Vultr.
-image = 
+# Use only one of the "snapshot" or "image" parameter, never both.
+# To list all available OS images:
+#     curl "https://api.vultr.com/v2/os" -X GET -H "Authorization: Bearer ----------" | jq -c '.os[] | {id, name, family}'
+#
+# Image ID '477' is a 'Debian 11 x64 (bullseye)'.
+#snapshot = 
+image = 477
 
 # ---- Type
 # Vultr instance type, hardware wise. Will impact on cost.

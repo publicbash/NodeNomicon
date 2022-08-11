@@ -3,10 +3,10 @@
 # ----- Defaults & Config -----------------------------------------------------
 
 APP_ID="NodeManager Vultr Driver"
-APP_VERSION="0.1.5 beta"
+APP_VERSION="0.1.6 beta"
 APP_BANNER="$APP_ID $APP_VERSION"
 APP_AUTHOR="Dex0r & Kaleb @ OpenBASH"
-APP_DATETIME="2022-08-06"
+APP_DATETIME="2022-08-11"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
@@ -60,6 +60,7 @@ function call_for_help
 	xecho "    get | download       Downloads a directory/file."
 	xecho "    id                   Get the node ID."
 	xecho "    image                Get the node image type, OS wise."
+	xecho "    snapshot             Get the node snapshot ID."
 	xecho "    ip | ipv4            Get the node IPv4 address."
 	xecho "    nodecount <provider> Get the created node count at provider account; need the provider .cfg file."
 	xecho "    put | upload         Uploads a directory/file."
@@ -84,20 +85,21 @@ function read_node_data
 	NODE_ID=$( get_param $NODE_DATA_FILE node_id '' )
 	NODE_TYPE=$( get_param $NODE_DATA_FILE node_type '' )
 	NODE_IMAGE=$( get_param $NODE_DATA_FILE node_image '' )
+	NODE_SNAPSHOT=$( get_param $NODE_DATA_FILE node_snapshot '' )
 	NODE_SSH_KEY=$( get_param $NODE_DATA_FILE node_ssh_key '' )
 	NODE_REGION=$( get_param $NODE_DATA_FILE node_region '' )
 	NODE_IPV4=$( get_param $NODE_DATA_FILE node_ipv4 '' )
 
 	# check node basic params
-	if [ "$NODE_DRIVER" == "" ] ; then xecho "ERROR: undefined driver for this node data." ; exit 1 ; fi
+	if [ "$NODE_DRIVER" == "" ]   ; then xecho "ERROR: undefined driver for this node data." ; exit 1 ; fi
 	if [ "$NODE_DRIVER" != "$DRIVER_NAME" ] ; then xecho "ERROR: the node do not correspond to this driver ('$DRIVER_NAME' vs '$NODE_DRIVER')" ; exit 1 ; fi
-	if [ "$API_KEY" == "" ]     ; then xecho "ERROR: api-key not found." ; exit 1 ; fi
-	if [ "$NODE_ID" == "" ]     ; then xecho "ERROR: undefined node ID for this node data." ; exit 1 ; fi
-	if [ "$NODE_TYPE" = "" ]    ; then xecho "WARNING: undefined node parameter 'node_type'." ; fi
-	if [ "$NODE_IMAGE" = "" ]   ; then xecho "WARNING: undefined node parameter 'node_image'." ; fi
-	if [ "$NODE_SSH_KEY" = "" ] ; then xecho "WARNING: undefined node parameter 'node_ssh_key'." ; fi
-	if [ "$NODE_REGION" = "" ]  ; then xecho "WARNING: undefined node parameter 'node_region'." ; fi
-	if [ "$NODE_IPV4" = "" ]    ; then xecho "WARNING: undefined node parameter 'node_ipv4'." ; fi
+	if [ "$API_KEY" == "" ]       ; then xecho "ERROR: api-key not found." ; exit 1 ; fi
+	if [ "$NODE_ID" == "" ]       ; then xecho "ERROR: undefined node ID for this node data." ; exit 1 ; fi
+	if [ "$NODE_TYPE" == "" ]     ; then xecho "WARNING: undefined node parameter 'node_type'." ; fi
+	if [ "$NODE_IMAGE" == "" ] && [ "$NODE_SNAPSHOT" == "" ] ; then xecho "WARNING: both undefined node parameters: 'node_image' and 'node_snapshot'." ; fi
+	if [ "$NODE_SSH_KEY" == "" ]  ; then xecho "WARNING: undefined node parameter 'node_ssh_key'." ; fi
+	if [ "$NODE_REGION" == "" ]   ; then xecho "WARNING: undefined node parameter 'node_region'." ; fi
+	if [ "$NODE_IPV4" == "" ]     ; then xecho "WARNING: undefined node parameter 'node_ipv4'." ; fi
 }
 
 function clear_known_hosts
@@ -195,9 +197,12 @@ MAX_NODE_COUNT=""
 NODE_ID=""
 NODE_TYPE=""
 NODE_IMAGE=""
+NODE_SNAPSHOT=""
 NODE_SSH_KEY=""
 NODE_REGION=""
 NODE_IPV4=""
+
+BOOT_SCRIPT_NAME="NodeNomicon-StartUpScript-v0.1"
 
 NODE_DATA_FILE="$WORKING_DIR/node_$NODE_LABEL.data"
 
@@ -206,6 +211,50 @@ NO_NODE_DATA_ACTIONS=("create" "nodecount")
 [[ "$( containsElement $NODE_ACTION ${NO_NODE_DATA_ACTIONS[@]} )" == false ]] && read_node_data
 
 # ----- Actions definitions -----------
+function get_startup_script_id
+{
+	local api_endpoint="$API_URL/startup-scripts"
+	local api_output=$( gen_api_output )
+	local api_output_header="${api_output}.header"
+	local http_result
+
+	http_result=$( $CURL_CMD --location --silent --request GET --header "Content-Type: application/json" --header "Authorization: Bearer $API_KEY" --user-agent "$API_USER_AGENT" --output $api_output --dump-header $api_output_header --write-out '%{http_code}' "$api_endpoint" )
+	
+	if [ "$( echo $http_result | grep -P '^2[0-9]{2}$' )" != "" ] ; then 
+		cat $api_output | jq --arg sname $BOOT_SCRIPT_NAME -c -r '.startup_scripts[] | select (.name == $sname) | .id'
+	else
+		cp $api_output $api_output_header $ERROR_DIR
+		echo "" 
+	fi
+
+	if [ -f $api_output ] ; then rm $api_output $api_output_header ; fi
+}
+
+function upload_startup_script
+{
+	local api_endpoint="$API_URL/startup-scripts"
+	local api_output=$( gen_api_output )
+	local api_output_header="${api_output}.header"
+	local http_result
+
+	# Startup script in base64
+	# Can get it with:
+	#    startup_script_base64=$( base64 -w 0 ./src/nodenomicon/payloads/vultr_startup_preload_ssh_key.sh )
+	local startup_script_base64="IyEvYmluL3NoCgojIE9wZW5CYXNoCiMgQWRkIGN1c3RvbSBzc2ggcHVibGljIGtleSB0byB2b2xhdGlsZSBub2Rlcy4KIyBVc2VkIGJlY2F1c2UgY2Fubm90IHNldCBzc2hrZXkgd2l0aCBBUEkgYWdhaW5zdCBzbmFwc2hvdCBjbG9uZXMuCiMgUnVucyBvbiAvZXRjL25ldHdvcmsvaWYtdXAuZCBhcyBzeW1saW5rLgojIAojIFBlcnNpc3QgaXQgd2l0aDoKIyAgY2htb2QgK3ggL3Jvb3QvYWRkX2N1c3RvbV9zc2hrZXkuc2gKIyAgY2QgL2V0Yy9uZXR3b3JrL2lmLXVwLmQvCiMgIGxuIC1zIC9yb290L2FkZF9jdXN0b21fc3Noa2V5LnNoIDAwMWFkZGN1c3RvbXNzaGtleQojCiMgS2FsZWIgLSAyMDIyLTA4LTExCgpjZCAvcm9vdAoKdXNlcl9zc2hfa2V5PSQoIGN1cmwgLXMgJ2h0dHA6Ly8xNjkuMjU0LjE2OS4yNTQvdXNlci1kYXRhL3VzZXItZGF0YScgKQoKaWYgWyAiJHVzZXJfc3NoX2tleSIgIT0gIiIgXSA7IHRoZW4gCglta2RpciAtcCAvcm9vdC8uc3NoCgljaG1vZCA2MDAgL3Jvb3QvLnNzaAoJZWNobyAiJHVzZXJfc3NoX2tleSIgPiAvcm9vdC8uc3NoL2F1dGhvcml6ZWRfa2V5cwoJY2htb2QgNzAwIC9yb290Ly5zc2gvYXV0aG9yaXplZF9rZXlzCgllY2hvICJbICQoIGRhdGUgLUlzICkgXSBBZGRlZCBzc2gga2V5IGZyb20gaW5zdGFuY2UgbWV0YWRhdGEiID4+IHN0YXJ0dXAubG9nCmVsc2UKCWVjaG8gIlsgJCggZGF0ZSAtSXMgKSBdIEVSUk9SOiBDYW5ub3QgYWRkIHNzaCBrZXkgZnJvbSBpbnN0YW5jZSBtZXRhZGF0YSIgPj4gc3RhcnR1cC5sb2cKZmk="
+	
+	http_result=$( $CURL_CMD --location --silent --request POST --header "Content-Type: application/json" --header "Authorization: Bearer $API_KEY" --user-agent "$API_USER_AGENT" --data '{"name":"'"$BOOT_SCRIPT_NAME"'","type":"boot","script":"'"$startup_script_base64"'"}' --output $api_output --dump-header $api_output_header --write-out '%{http_code}' "$api_endpoint" )
+	
+	if [ "$( echo $http_result | grep -P '^2[0-9]{2}$' )" != "" ] ; then 
+		cat $api_output | jq --arg sname $BOOT_SCRIPT_NAME -c -r '.startup_script.id'
+	else
+		cp $api_output $api_output_header $ERROR_DIR
+		echo "" 
+	fi
+
+	if [ -f $api_output ] ; then rm $api_output $api_output_header ; fi
+
+}
+
 function create_node
 {
 	# Do not overwrite node data, if exists.
@@ -222,7 +271,8 @@ function create_node
 	API_URL=$( get_param $provider_cfg api-url 'https://api.vultr.com/v2' )
 	API_USER_AGENT=$( get_param $provider_cfg user-agent "$APP_BANNER" )
 	NODE_TYPE=$( get_param $provider_cfg type 'vc2-1c-1gb' )
-	NODE_IMAGE=$( get_param $provider_cfg image '352' )
+	NODE_IMAGE=$( get_param $provider_cfg image '' )
+	NODE_SNAPSHOT=$( get_param $provider_cfg snapshot '' )
 	MAX_NODE_COUNT=$( get_param $provider_cfg max-node-count '20' )
 
 	NODE_DRIVER=$( get_param $provider_cfg driver '' )
@@ -238,7 +288,7 @@ function create_node
 	local try_count=0
 	local lock_file="/tmp/nm_create_$( echo $API_KEY | md5sum | cut -d' ' -f1 ).lock"
 	local lock_fd=137
-	local http_result error_output_file node_ssh_key node_status ssh_status node_count node_available_slots
+	local http_result error_output_file node_ssh_key node_status ssh_status node_count node_available_slots boot_script_id
 	
 	# fault if cannot get node region
 	if [ "$( echo $node_selected_region | grep -P '^api_error_')" != "" ] ; then
@@ -272,9 +322,36 @@ function create_node
 		xecho "$NODE_LABEL: There's $node_available_slots slots available ($node_count already taken)."
 		sshkey_base64=$( echo $node_ssh_key | base64 -w 0 )
 
+		# set 'image' or 'snapshot'... 'image' takes precedence
+		if [ "$NODE_IMAGE" != "" ] ; then 
+			NODE_IMAGE_SNAPSHOT='"os_id":'"$NODE_IMAGE"
+			
+			# As part of "base distro" selection for Vultr, we must
+			# prepare the node startup script (ssh key add on start)
+			xecho "$NODE_LABEL: Checking for Vultr startup script..."
+			boot_script_id=$( get_startup_script_id )
+			if [ "$boot_script_id" == "" ] ; then
+				xecho "$NODE_LABEL: Startup script not found on Vultr, uploading..."
+				boot_script_id=$( upload_startup_script )
+			fi
+
+			if [ "$boot_script_id" != "" ] ; then
+				xecho "$NODE_LABEL: Startup script found: $boot_script_id"
+				NODE_SCRIPT_ID='"script_id":"'"$boot_script_id"'",'
+			else
+				xecho "$NODE_LABEL: WARNING: startup script not found again!"
+				flock --unlock "$lock_fd"
+				# Exit code 23 means that we cannot get the startup script to work
+				exit 23
+			fi
+		else
+			NODE_IMAGE_SNAPSHOT='"snapshot_id":"'"$NODE_SNAPSHOT"'"'
+			NODE_SCRIPT_ID=""
+		fi
+
 		# create node
 		xecho "$NODE_LABEL: Creating node..."
-		http_result=$( $CURL_CMD --location --silent --request POST --header "Content-Type: application/json" --header "Authorization: Bearer $API_KEY" --user-agent "$API_USER_AGENT" --data '{"label":"'"$NODE_LABEL"'","region":"'"$node_selected_region"'","plan":"'"$NODE_TYPE"'","snapshot_id":"'"$NODE_IMAGE"'","user_data":"'"$sshkey_base64"'", "backups":"disabled","enable_ipv6":false,"ddos_protection":false,"activation_email":false,"hostname":"'"$NODE_LABEL"'","tag":"App-'"$NODE_GROUP_TAG"'","enable_private_network":false}' --output $api_output --dump-header $api_output_header --write-out '%{http_code}' "$api_endpoint"  )
+		http_result=$( $CURL_CMD --location --silent --request POST --header "Content-Type: application/json" --header "Authorization: Bearer $API_KEY" --user-agent "$API_USER_AGENT" --data '{"label":"'"$NODE_LABEL"'","region":"'"$node_selected_region"'","plan":"'"$NODE_TYPE"'",'"$NODE_IMAGE_SNAPSHOT"',"user_data":"'"$sshkey_base64"'",'"$NODE_SCRIPT_ID"'"backups":"disabled","enable_ipv6":false,"ddos_protection":false,"activation_email":false,"hostname":"'"$NODE_LABEL"'","tag":"App-'"$NODE_GROUP_TAG"'","enable_private_network":false}' --output $api_output --dump-header $api_output_header --write-out '%{http_code}' "$api_endpoint" )
 
 	else
 		xecho "$NODE_LABEL: WARNING: There's no more slots available. Current: $node_count nodes."
@@ -323,6 +400,7 @@ function create_node
 	echo "api_user_agent = $API_USER_AGENT" >> $NODE_DATA_FILE
 	echo "node_type = $NODE_TYPE" >> $NODE_DATA_FILE
 	echo "node_image = $NODE_IMAGE" >> $NODE_DATA_FILE
+	echo "node_snapshot = $NODE_SNAPSHOT" >> $NODE_DATA_FILE
 	echo "node_id = $NODE_ID" >> $NODE_DATA_FILE
 	echo "node_ssh_key = $node_ssh_key" >> $NODE_DATA_FILE
 	echo "node_region = $node_selected_region" >> $NODE_DATA_FILE
@@ -332,11 +410,12 @@ function create_node
 
 	# dump some info
 	xecho "$NODE_LABEL: node configuration:"
-	xecho "$NODE_LABEL:   driver = $DRIVER_NAME"
-	xecho "$NODE_LABEL:   type   = $NODE_TYPE"
-	xecho "$NODE_LABEL:   image  = $NODE_IMAGE"
-	xecho "$NODE_LABEL:   id     = $NODE_ID"
-	xecho "$NODE_LABEL:   region = $node_selected_region"
+	xecho "$NODE_LABEL:   driver   = $DRIVER_NAME"
+	xecho "$NODE_LABEL:   type     = $NODE_TYPE"
+	xecho "$NODE_LABEL:   image    = $NODE_IMAGE"
+	xecho "$NODE_LABEL:   snapshot = $NODE_SNAPSHOT"
+	xecho "$NODE_LABEL:   id       = $NODE_ID"
+	xecho "$NODE_LABEL:   region   = $node_selected_region"
 
 	# wait for ready status
 	node_status="$( get_node_status )"
@@ -626,6 +705,7 @@ case $NODE_ACTION in
 	'id')               xecho "$NODE_LABEL: id: $NODE_ID" ;;
 	'type')             xecho "$NODE_LABEL: type: $NODE_TYPE" ;;
 	'image')            xecho "$NODE_LABEL: image: $NODE_IMAGE" ;;
+	'snapshot')         xecho "$NODE_LABEL: snapshot: $NODE_SNAPSHOT" ;;
 	'region')           xecho "$NODE_LABEL: region: $NODE_REGION" ;;
 	'ip' | 'ipv4')      xecho "$NODE_LABEL: IPv4: $( get_node_IPv4 )" ;;
 	'status')           xecho "$NODE_LABEL: status: $( get_node_status )" ;;
